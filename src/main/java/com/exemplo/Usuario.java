@@ -1,0 +1,153 @@
+package com.exemplo;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+
+abstract public class Usuario {
+    private String nome;
+    private String cpf;
+    private String login;
+    private String senha;
+    private boolean ativo;
+
+    protected Usuario(String nome, String cpf, String login, String senha) {
+        this.nome = nome;
+        this.login = login;
+        this.cpf = cpf;
+        this.senha = senha;
+        this.ativo = true;
+    }
+
+    // Exibir dados do usuario autenticado
+    public void verUsuario() {
+        System.out.println("DADOS DO USÚARIO");
+        System.out.println("Nome: " + nome);
+        System.out.println("CPF: " + cpf);
+        System.out.println("Ativo: " + (ativo ? "Ativo" : "Inativo"));
+
+    }
+
+    // Editar um usuario ativo
+    public static void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha,
+            boolean ativo) {
+        if (verificaUsuarioAtivo(usuario)) {
+            return;
+        }
+
+        usuario.setNome(nome);
+        usuario.setCpf(cpf);
+        usuario.setLogin(login);
+        usuario.setSenha(senha);
+        usuario.setAtivo(ativo);
+    }
+
+    public static boolean autenticar(String login, String senha) {
+        Map<String, AttributeValue> dados = UsuarioRepository.buscarPorId(login);
+
+        String senhaHash = dados.get("senha").s();
+
+        if (!senha.equals(senhaHash)) {
+            System.out.println("Senha Invalida!");
+            System.out.println(senha);
+            System.out.println(senhaHash);
+            return false;
+        }
+        System.out.println("Usuario Autenticado com Sucesso!");
+        return true;
+    }
+
+    // Metodo estatico para verificar se um usuario está ativo
+    private static boolean verificaUsuarioAtivo(Usuario usuario) {
+        if (usuario.ativo == false) {
+            System.out.println("Usuario desativado!!");
+            return false;
+        }
+        return true;
+    }
+
+    // Desativar um usuario
+    public static void desativarUsuario(Usuario usuario) {
+        if (verificaUsuarioAtivo(usuario)) {
+            return;
+        }
+        usuario.setAtivo(false);
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    protected static List<Usuario> listarUsuarios() {
+        List<Map<String, AttributeValue>> listaUsuariosDynamo = UsuarioRepository.buscarTodosUsuarios();
+
+        List<Usuario> listaUsuarios = new ArrayList<Usuario>();
+
+        for (Map<String, AttributeValue> item : listaUsuariosDynamo) {
+            String nome = item.get("nome").s();
+            String login = item.get("id").s();
+            String cpf = item.get("cpf").s();
+            String senha = item.get("senha").s();
+            boolean ativo = item.get("ativo").bool();
+            String cargo = item.get("cargo").s();
+            // CAMPOS ADICIONAIS PARA MEMBRO
+            String endereco = item.containsKey("endereco") ? item.get("endereco").s() : "";
+            String telefone = item.containsKey("telefone") ? item.get("telefone").s() : "";
+            String email = item.containsKey("email") ? item.get("email").s() : "";
+            Usuario novoUsuario = null;
+
+            if (!cargo.isEmpty()) {
+                novoUsuario = Bibliotecario.criarBibliotecario(nome, cpf, login, senha, cargo);
+                novoUsuario.setAtivo(ativo);
+                listaUsuarios.add(novoUsuario);
+                continue;
+            }
+            novoUsuario = Membro.criarMembro(nome, cpf, login, senha, endereco, telefone, email);
+            novoUsuario.setAtivo(ativo);
+            listaUsuarios.add(novoUsuario);
+
+        }
+
+        return listaUsuarios;
+
+    }
+
+}
