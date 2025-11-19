@@ -1,8 +1,10 @@
-package com.exemplo;
+package com.exemplo.models;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.exemplo.repositories.UsuarioRepository;
 
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
@@ -23,6 +25,7 @@ abstract public class Usuario {
 
     // Exibir dados do usuario autenticado
     public void verUsuario() {
+        System.out.println("\n====================");
         System.out.println("DADOS DO USÚARIO");
         System.out.println("Nome: " + nome);
         System.out.println("CPF: " + cpf);
@@ -51,8 +54,6 @@ abstract public class Usuario {
 
         if (!senha.equals(senhaHash)) {
             System.out.println("Senha Invalida!");
-            System.out.println(senha);
-            System.out.println(senhaHash);
             return false;
         }
         System.out.println("Usuario Autenticado com Sucesso!");

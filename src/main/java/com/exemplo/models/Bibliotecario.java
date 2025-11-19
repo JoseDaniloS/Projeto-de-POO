@@ -1,4 +1,4 @@
-package com.exemplo;
+package com.exemplo.models;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +19,6 @@ public class Bibliotecario extends Usuario {
     }
 
     public static Bibliotecario criarBibliotecario(String nome, String cpf, String login, String senha, String cargo) {
-
         if (!CARGOS_VALIDOS.contains(cargo.toLowerCase())) {
             System.out.println("Cargo inválido!");
         }
@@ -27,8 +26,9 @@ public class Bibliotecario extends Usuario {
         return new Bibliotecario(nome, cpf, login, senha, cargo);
     }
 
-    public static void editarBibliotecario(Bibliotecario bibliotecario, String nome, String cpf, String login, String senha, boolean ativo, String cargo) {
-        if(bibliotecario == null){
+    public static void editarBibliotecario(Bibliotecario bibliotecario, String nome, String cpf, String login,
+            String senha, boolean ativo, String cargo) {
+        if (bibliotecario == null) {
             System.out.println("Erro: Bibliotecário inválido.");
             return;
         }
@@ -36,23 +36,23 @@ public class Bibliotecario extends Usuario {
         Usuario.editarUsuario(bibliotecario, nome, cpf, login, senha, ativo);
 
         bibliotecario.setCargo(cargo);
-        System.out.println("Dados do bibliotecário atualizados.");      
+        System.out.println("Dados do bibliotecário atualizados.");
     }
 
     public String getCargo() {
         return cargo;
     }
 
-    public void setCargo(String cargo){
-        if(!CARGOS_VALIDOS.contains(cargo.toLowerCase())){
+    public void setCargo(String cargo) {
+        if (!CARGOS_VALIDOS.contains(cargo.toLowerCase())) {
             this.cargo = cargo;
-        } else{
+        } else {
             System.out.println("Erro ao editar: O cargo '" + cargo + "' não é válido. Mantendo o anterior.");
         }
     }
 
     @Override
-    public void verUsuario(){
+    public void verUsuario() {
         super.verUsuario();
         System.out.println("Cargo: " + this.cargo);
     }
