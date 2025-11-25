@@ -3,25 +3,27 @@ package com.exemplo.menus;
 import java.util.Scanner;
 
 import com.exemplo.models.Membro;
+import com.exemplo.ui.ConsoleUI;
+import com.exemplo.utils.InputUtils;
 
 public class MenuMembro {
     public static void membroMenu(Membro membro) {
-        Scanner scan = new Scanner(System.in);
+
         int option;
 
         do {
-            System.out.println("\n===== MENU DO MEMBRO =====");
+            ConsoleUI.header("MENU DO MEMBRO");
             System.out.println("1 - Ver meus dados");
             System.out.println("2 - Ver livros disponíveis");
             System.out.println("3 - Ver meus empréstimos");
             System.out.println("4 - Logout");
-            System.out.print("Escolha: ");
-            option = scan.nextInt();
-            scan.nextLine();
+
+            option = InputUtils.readInt("Escolha: ");
 
             switch (option) {
                 case 1:
-                    membro.verUsuario();
+                    membro.verMembro();
+                    ConsoleUI.pause();
                     break;
                 case 2:
                     // listarLivros();

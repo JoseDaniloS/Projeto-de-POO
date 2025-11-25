@@ -50,11 +50,13 @@ public class UsuarioRepository {
         }
     }
 
-    public static List<Map<String, AttributeValue>> buscarTodosUsuarios() {
+    public static List<Map<String, AttributeValue>> buscarTodosBibliotecarios() {
         DynamoDbClient client = AWSConfig.getClient();
 
         try {
-            ScanRequest request = ScanRequest.builder().tableName(TABLE_NAME).build();
+            ScanRequest request = ScanRequest.builder().tableName(TABLE_NAME)
+                    .filterExpression("attribute_exists(cargo)")
+                    .build();
 
             ScanResponse response = client.scan(request);
 
@@ -62,7 +64,28 @@ public class UsuarioRepository {
                 System.out.println("Nenhum usuário encontrado!");
                 return null;// Retorna vazio
             }
+            return response.items(); // Retorna a lista de itens
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar todos os usuarios");
+            System.out.println(e.getMessage());
+            return null; // Retorna vazio
+        }
+    }
 
+    public static List<Map<String, AttributeValue>> buscarTodosMembros() {
+        DynamoDbClient client = AWSConfig.getClient();
+
+        try {
+            ScanRequest request = ScanRequest.builder().tableName(TABLE_NAME)
+                    .filterExpression("attribute_not_exists(cargo)")
+                    .build();
+
+            ScanResponse response = client.scan(request);
+
+            if (!response.hasItems()) {
+                System.out.println("Nenhum usuário encontrado!");
+                return null;// Retorna vazio
+            }
             return response.items(); // Retorna a lista de itens
         } catch (Exception e) {
             System.out.println("Erro ao buscar todos os usuarios");
