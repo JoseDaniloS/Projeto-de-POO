@@ -5,8 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.exemplo.repositories.UsuarioRepository;
+<<<<<<< HEAD
 import com.exemplo.ui.ConsoleUI;
 
+=======
+//added
+import com.exemplo.utils.UsuarioUtils;
+>>>>>>> 40ba45000c1383fce6390a375b906ba9f80ec956
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 abstract public class Usuario {
@@ -36,12 +41,26 @@ abstract public class Usuario {
     // Editar um usuario ativo
     public static void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha,
             boolean ativo) {
+<<<<<<< HEAD
+=======
+        if (usuario == null) {
+            System.out.println("Erro: Usuário inválido.");
+            return;
+        }
+>>>>>>> 40ba45000c1383fce6390a375b906ba9f80ec956
 
-        usuario.setNome(nome);
-        usuario.setCpf(cpf);
-        usuario.setLogin(login);
-        usuario.setSenha(senha);
-        usuario.setAtivo(ativo);
+        if (!usuario.isAtivo()) {
+            System.out.println("Não é possível editar um usuário inativo.");
+            return;
+        }
+
+        try {
+            Map<String, AttributeValue> item = UsuarioUtils.toMap(usuario);
+            UsuarioRepository.enviarElementoBancoDeDados(item, "UsuariosPOO");
+            System.out.println("Dados do usuário atualizados e salvos no banco.");
+        } catch (Exception ex) {
+            System.out.println("Erro ao salvar usuário no banco: " + ex.getMessage());
+        }
     }
 
     public static boolean autenticar(String login, String senha) {
