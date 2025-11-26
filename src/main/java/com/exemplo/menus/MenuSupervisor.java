@@ -7,6 +7,7 @@ import com.exemplo.models.Bibliotecario;
 import com.exemplo.models.Usuario;
 import com.exemplo.repositories.UsuarioRepository;
 import com.exemplo.ui.ConsoleUI;
+import com.exemplo.utils.DynamoUtils;
 import com.exemplo.utils.InputUtils;
 import com.exemplo.utils.UsuarioUtils;
 
@@ -108,10 +109,10 @@ public class MenuSupervisor {
                         ConsoleUI.pause();
                         break;
                     case 2:
-                        // editarBibliotecario();
+                        editarBibliotecario();
                         break;
                     case 3:
-                        // desativarBibliotecario();
+                        desativarBibliotecario();
                         break;
                     case 4:
                         System.out.println("Voltando...");
@@ -127,4 +128,107 @@ public class MenuSupervisor {
             ConsoleUI.pause();
         }
     }
+
+    private static void editarBibliotecario() {
+        String id = InputUtils.readString("Informe o ID do bibliotecario a ser editado:");
+        Usuario usuarioBancoDados = UsuarioUtils.criaUsuarioBancoDados(UsuarioRepository.buscarPorId(id));
+        if (usuarioBancoDados instanceof Bibliotecario == false) {
+            System.out.println("Usuario informado não é um bibliotecario!");
+            ConsoleUI.pause();
+            return;
+        }
+        Bibliotecario bibliotecario = (Bibliotecario) usuarioBancoDados;
+        try {
+            int option;
+            do {
+                ConsoleUI.header("EDITAR MEMBRO");
+                System.out.println("1 - NOME");
+                System.out.println("2 - CPF");
+                System.out.println("3 - LOGIN");
+                System.out.println("4 - CARGO");
+                System.out.println("5 - SENHA");
+                System.out.println("6 - VOLTAR");
+                option = InputUtils.readInt("Escolha:");
+                switch (option) {
+                    case 1:
+                        String nome = InputUtils.readString("Informe o nome:");
+                        bibliotecario.setNome(nome);
+                        break;
+                    case 2:
+                        String cpf = InputUtils.readString("Informe o cpf:");
+                        bibliotecario.setCpf(cpf);
+                        break;
+                    case 3:
+                        String login = InputUtils.readString("Informe o login:");
+                        bibliotecario.setLogin(login);
+                        break;
+                    case 4:
+                        System.out.println("Selecione o Cargo:");
+                        System.out.println("1 - Estagiário");
+                        System.out.println("2 - Atendente");
+                        int opcaoCargo = InputUtils.readInt("Escolha:");
+
+                        String cargo;
+                        switch (opcaoCargo) {
+                            case 1:
+                                cargo = "estagiario";
+                                break;
+                            case 2:
+                                cargo = "atendente";
+                                break;
+                            default:
+                                System.out.println("Cargo inválido! Cadastro cancelado.");
+                                return;
+                        }
+                        bibliotecario.setCargo(cargo);
+                        break;
+                    case 5:
+                        String senha = InputUtils.readString("Informe a senha:");
+                        bibliotecario.setSenha(senha);
+                        break;
+
+                    case 6:
+                        System.out.println("Voltando...");
+                        ConsoleUI.pause();
+                        return;
+
+                    default:
+                        System.out.println("Opção inválida.");
+                        ConsoleUI.pause();
+                        return;
+                }
+                UsuarioRepository.enviarElementoBancoDeDados(UsuarioUtils.toMap(bibliotecario), "UsuariosPOO");
+                System.out.println("Bibliotecario editado com sucesso!");
+                ConsoleUI.pause();
+            } while (option != 6);
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.out.println("Erro ao editar bibliotecario: " + e.getMessage());
+            ConsoleUI.pause();
+
+        }
+
+    }
+
+    private static void desativarBibliotecario() {
+        String id = InputUtils.readString("Informe o ID do Bibliotecario a ser desativado: ");
+        // bucar no banco de dados
+        Usuario usuario = UsuarioUtils.criaUsuarioBancoDados(UsuarioRepository.buscarPorId(id));
+        if (usuario instanceof Bibliotecario == false) {
+            System.out.println("Usuario informado não é um Bibliotecario!");
+            ConsoleUI.pause();
+            return;
+        }
+        if (usuario == null) {
+            System.out.println("Bibliotecario não encontrado!");
+            ConsoleUI.pause();
+            return;
+        }
+        Usuario.desativarUsuario(usuario);
+        usuario.verUsuario();
+        UsuarioRepository.enviarElementoBancoDeDados(UsuarioUtils.toMap(usuario), "UsuariosPOO");
+        System.out.println("Bibliotecario desativado com sucesso!");
+        ConsoleUI.pause();
+
+    }
 }

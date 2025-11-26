@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.exemplo.exceptions.LoginExceptions;
 import com.exemplo.repositories.UsuarioRepository;
-<<<<<<< HEAD
 import com.exemplo.ui.ConsoleUI;
-
-=======
-//added
 import com.exemplo.utils.UsuarioUtils;
->>>>>>> 40ba45000c1383fce6390a375b906ba9f80ec956
+
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 abstract public class Usuario {
@@ -41,13 +38,6 @@ abstract public class Usuario {
     // Editar um usuario ativo
     public static void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha,
             boolean ativo) {
-<<<<<<< HEAD
-=======
-        if (usuario == null) {
-            System.out.println("Erro: Usuário inválido.");
-            return;
-        }
->>>>>>> 40ba45000c1383fce6390a375b906ba9f80ec956
 
         if (!usuario.isAtivo()) {
             System.out.println("Não é possível editar um usuário inativo.");
@@ -64,19 +54,31 @@ abstract public class Usuario {
     }
 
     public static boolean autenticar(String login, String senha) {
-        Map<String, AttributeValue> dados = UsuarioRepository.buscarPorId(login);
+        try {
+            Map<String, AttributeValue> dados = UsuarioRepository.buscarPorId(login);
 
-        if (dados == null)
-            return false;
+            if (dados == null)
+                throw new LoginExceptions("Usuario não informado!");
 
-        String senhaHash = dados.get("senha").s();
+            String senhaHash = dados.get("senha").s();
 
-        if (!senha.equals(senhaHash)) {
-            System.out.println("Senha Invalida!");
-            return false;
+            if (dados.get("ativo").bool() == false) {
+                throw new LoginExceptions("Usuario desativado! Contate o administrador.");
+
+            }
+
+            if (!senha.equals(senhaHash)) {
+                throw new LoginExceptions("Senha inválida!");
+
+            }
+            System.out.println("Usuario Autenticado com Sucesso!");
+            return true;
+
+        } catch (LoginExceptions e) {
+            throw e;
+        } catch (Exception e) {
+            throw new LoginExceptions("Erro no banco de dados.");
         }
-        System.out.println("Usuario Autenticado com Sucesso!");
-        return true;
     }
 
     // Metodo estatico para verificar se um usuario está ativo
@@ -90,7 +92,7 @@ abstract public class Usuario {
 
     // Desativar um usuario
     public static void desativarUsuario(Usuario usuario) {
-        if (verificaUsuarioAtivo(usuario)) {
+        if (!verificaUsuarioAtivo(usuario)) {
             return;
         }
         usuario.setAtivo(false);
@@ -173,9 +175,6 @@ abstract public class Usuario {
             listaUsuarios.add(novoUsuario);
 
         }
-
         return listaUsuarios;
-
-    }
-
+    }
 }
