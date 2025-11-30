@@ -109,10 +109,10 @@ public class MenuSupervisor {
                         ConsoleUI.pause();
                         break;
                     case 2:
-                        editarBibliotecario();
+                        // editarBibliotecario();
                         break;
                     case 3:
-                        desativarBibliotecario();
+                        // desativarBibliotecario();
                         break;
                     case 4:
                         System.out.println("Voltando...");

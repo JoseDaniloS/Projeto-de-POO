@@ -4,7 +4,6 @@ import java.io.Console;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.exemplo.exceptions.LoginExceptions;
 import com.exemplo.menus.MenuBibliotecario;
 import com.exemplo.menus.MenuMembro;
 import com.exemplo.menus.MenuSupervisor;
@@ -39,16 +38,14 @@ public class App {
 
                     char[] senhaChars = console.readPassword("Informe a senha:");
                     senha = new String(senhaChars);
-                    
-                    try {
-                        boolean ehAutenticado = Usuario.autenticar(login, senha);
 
-                        if (ehAutenticado) {
-                            systemMenu(login);
-                        }
-                    } catch (LoginExceptions e) {
-                        
-                        System.out.println("Erro: " + e.getMessage());
+                    boolean ehAutenticado = Usuario.autenticar(login, senha);
+
+                    if (ehAutenticado) {
+                        systemMenu(login);
+                    } else {
+                        ConsoleUI.clear();
+                        System.out.println("Credenciais inválidas.");
                         ConsoleUI.pause();
                     }
                     break;

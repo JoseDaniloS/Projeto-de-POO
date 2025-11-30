@@ -1,6 +1,7 @@
 package com.exemplo.menus;
 
 import java.util.List;
+import java.util.Scanner;
 
 import com.exemplo.models.Bibliotecario;
 import com.exemplo.models.Livro;
@@ -28,7 +29,6 @@ public class MenuBibliotecario {
             System.out.println("6 - Empréstimos/Devoluções");
             System.out.println("7 - Logout");
             option = InputUtils.readInt("Escolha: ");
-            ConsoleUI.clear();
             switch (option) {
                 case 1:
                     bibliotecario.verBibliotecario();
@@ -54,7 +54,6 @@ public class MenuBibliotecario {
                     break;
                 default:
                     System.out.println("Opção inválida.");
-                    ConsoleUI.pause();
             }
 
         } while (option != 7);
@@ -223,16 +222,15 @@ public class MenuBibliotecario {
                         ConsoleUI.pause();
                         break;
                     case 2:
-                        editarMembro();
+                        // editarBibliotecario();
                         break;
                     case 3:
-                        desativarMembro();
+                        // desativarBibliotecario();
                         break;
                     case 4:
                         System.out.println("Voltando...");
                         break;
                     default:
-                        ConsoleUI.clear();
                         System.out.println("Opção inválida.");
                         ConsoleUI.pause();
                 }
@@ -313,8 +311,6 @@ public class MenuBibliotecario {
             } while (option != 8);
         } catch (Exception e) {
             // TODO: handle exception
-            ConsoleUI.clear();
-            System.out.println("Erro ao editar membro" + e.getMessage());
             ConsoleUI.pause();
         }
 
