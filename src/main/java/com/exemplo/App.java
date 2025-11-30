@@ -47,7 +47,7 @@ public class App {
                             systemMenu(login);
                         }
                     } catch (LoginExceptions e) {
-                        ConsoleUI.clear();
+                        
                         System.out.println("Erro: " + e.getMessage());
                         ConsoleUI.pause();
                     }

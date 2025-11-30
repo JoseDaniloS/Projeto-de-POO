@@ -7,6 +7,7 @@ import java.util.Map;
 import com.exemplo.exceptions.LoginExceptions;
 import com.exemplo.repositories.UsuarioRepository;
 import com.exemplo.ui.ConsoleUI;
+import com.exemplo.utils.DynamoUtils;
 import com.exemplo.utils.UsuarioUtils;
 
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -46,7 +47,7 @@ abstract public class Usuario {
 
         try {
             Map<String, AttributeValue> item = UsuarioUtils.toMap(usuario);
-            UsuarioRepository.enviarElementoBancoDeDados(item, "UsuariosPOO");
+            DynamoUtils.enviarElementoBancoDeDados(item, "UsuariosPOO");
             System.out.println("Dados do usuário atualizados e salvos no banco.");
         } catch (Exception ex) {
             System.out.println("Erro ao salvar usuário no banco: " + ex.getMessage());
@@ -176,5 +177,5 @@ abstract public class Usuario {
 
         }
         return listaUsuarios;
-    }
+    }
 }

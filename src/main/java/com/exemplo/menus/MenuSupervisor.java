@@ -76,7 +76,7 @@ public class MenuSupervisor {
 
             Bibliotecario novoBibliotecario = Bibliotecario.criarBibliotecario(nome, cpf, login, senha, cargo);
 
-            UsuarioRepository.enviarElementoBancoDeDados(UsuarioUtils.toMap(novoBibliotecario), "UsuariosPOO");
+            DynamoUtils.enviarElementoBancoDeDados(UsuarioUtils.toMap(novoBibliotecario), "UsuariosPOO");
             ConsoleUI.clear();
             System.out.println("Bibliotecario " + nome + " cadastrado com sucesso!");
             ConsoleUI.pause();
@@ -197,7 +197,7 @@ public class MenuSupervisor {
                         ConsoleUI.pause();
                         return;
                 }
-                UsuarioRepository.enviarElementoBancoDeDados(UsuarioUtils.toMap(bibliotecario), "UsuariosPOO");
+                DynamoUtils.enviarElementoBancoDeDados(UsuarioUtils.toMap(bibliotecario), "UsuariosPOO");
                 System.out.println("Bibliotecario editado com sucesso!");
                 ConsoleUI.pause();
             } while (option != 6);
@@ -226,9 +226,9 @@ public class MenuSupervisor {
         }
         Usuario.desativarUsuario(usuario);
         usuario.verUsuario();
-        UsuarioRepository.enviarElementoBancoDeDados(UsuarioUtils.toMap(usuario), "UsuariosPOO");
+        DynamoUtils.enviarElementoBancoDeDados(UsuarioUtils.toMap(usuario), "UsuariosPOO");
         System.out.println("Bibliotecario desativado com sucesso!");
         ConsoleUI.pause();
 
-    }
+    }
 }

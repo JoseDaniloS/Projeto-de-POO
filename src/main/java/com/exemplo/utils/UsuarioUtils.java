@@ -6,6 +6,7 @@ import java.util.Map;
 import com.exemplo.models.Bibliotecario;
 import com.exemplo.models.Membro;
 import com.exemplo.models.Usuario;
+import com.exemplo.ui.ConsoleUI;
 
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
@@ -57,4 +58,13 @@ public class UsuarioUtils {
         return item;
     }
 
+    public static boolean isBibliotecario(Usuario usuario) {
+        if (usuario instanceof Membro == false) {
+            ConsoleUI.clear();
+            System.out.println("Usuario informado não é um Membro!");
+            ConsoleUI.pause();
+            return false;
+        }
+        return true;
+    }
 }
