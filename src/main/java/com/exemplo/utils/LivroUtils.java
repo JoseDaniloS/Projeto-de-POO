@@ -8,6 +8,7 @@ import com.exemplo.models.Bibliotecario;
 import com.exemplo.models.Livro;
 import com.exemplo.models.Membro;
 import com.exemplo.models.Usuario;
+import com.exemplo.repositories.LivrosRepository;
 import com.exemplo.ui.ConsoleUI;
 
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -18,12 +19,43 @@ public class LivroUtils {
         item.put("isbn", DynamoUtils.criarAttributeValueDynamoDB(livro.getIsbn()));
         item.put("titulo", DynamoUtils.criarAttributeValueDynamoDB(livro.getTitulo()));
         item.put("autor", DynamoUtils.criarAttributeValueDynamoDB(livro.getAutor()));
-        item.put("anoPublicacao", DynamoUtils.criarAttributeValueDynamoDB(livro.getAnoPublicacao()));
+        item.put("anoPublicacao",
+                DynamoUtils.criarAttributeValueDynamoDB(livro.getAnoPublicacao()));
         item.put("numeroCopias", DynamoUtils.criarAttributeValueDynamoDB(livro.getNumeroCopias()));
         item.put("disponiveis", DynamoUtils.criarAttributeValueDynamoDB(livro.getDisponiveis()));
 
         return item;
     }
+    
+    public static void editar(Livro livro) {
+
+        ConsoleUI.header("EDITAR LIVRO");
+        livro.verLivro();
+        System.out.println("--------------------------");
+
+        
+        String titulo = InputUtils.solicitar("Título", livro.getTitulo());
+        String autor = InputUtils.solicitar("Autor", livro.getAutor());
+        int anoPublicacao = InputUtils.solicitarInt("Ano de Publicação", livro.getAnoPublicacao());
+        int numeroCopias = InputUtils.solicitarInt("Número de Cópias", livro.getNumeroCopias());
+        int disponiveis = InputUtils.solicitarInt("Disponíveis", livro.getDisponiveis());
+
+        try {
+            Livro.editarLivro(livro, livro.getIsbn(), titulo, autor, anoPublicacao, numeroCopias,
+                    disponiveis);
+
+            // Atualizar no banco
+            DynamoUtils.enviarElementoBancoDeDados(LivroUtils.toMap(livro),
+                    LivrosRepository.TABLE_NAME);
+
+            System.out.println("Livro atualizado com sucesso!");
+            ConsoleUI.pause();
+        } catch (Error e) {
+            System.out.println(e.getMessage());
+            ConsoleUI.pause();
+        }
+    }
+
 
     public static Livro criaLivroBancoDados(Map<String, AttributeValue> dadosLivro) {
 

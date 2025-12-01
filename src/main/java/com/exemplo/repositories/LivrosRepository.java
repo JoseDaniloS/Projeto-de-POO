@@ -14,7 +14,7 @@ import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
 import software.amazon.awssdk.services.dynamodb.model.ScanResponse;
 
 public class LivrosRepository {
-    private static final String TABLE_NAME = "LivrosPOO";
+    public static final String TABLE_NAME = "LivrosPOO";
 
     public static Map<String, AttributeValue> buscarPorIsbn(String isbn) {
         DynamoDbClient client = AWSConfig.getClient();

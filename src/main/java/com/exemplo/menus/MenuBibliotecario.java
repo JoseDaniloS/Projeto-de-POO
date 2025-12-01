@@ -13,6 +13,7 @@ import com.exemplo.ui.ConsoleUI;
 import com.exemplo.utils.DynamoUtils;
 import com.exemplo.utils.InputUtils;
 import com.exemplo.utils.LivroUtils;
+import com.exemplo.utils.MembroUtils;
 import com.exemplo.utils.UsuarioUtils;
 
 public class MenuBibliotecario {
@@ -26,8 +27,7 @@ public class MenuBibliotecario {
             System.out.println("3 - Gerenciar Membros");
             System.out.println("4 - Cadastrar Livro");
             System.out.println("5 - Gerenciar Livros");
-            System.out.println("6 - Empréstimos/Devoluções");
-            System.out.println("7 - Logout");
+            System.out.println("6 - Logout");
             option = InputUtils.readInt("Escolha: ");
             switch (option) {
                 case 1:
@@ -47,16 +47,13 @@ public class MenuBibliotecario {
                     gerenciarLivros();
                     break;
                 case 6:
-                    // processosEmprestimo();
-                    break;
-                case 7:
                     System.out.println("Saindo...");
                     break;
                 default:
                     System.out.println("Opção inválida.");
             }
 
-        } while (option != 7);
+        } while (option != 6);
 
     }
 
@@ -98,7 +95,18 @@ public class MenuBibliotecario {
                         LivroUtils.exibirListaLivros();
                         break;
                     case 2:
-                        editarLivro();
+                        String isbn =
+                                InputUtils.readString("Informe o ISBN do livro a ser editado: ");
+
+                        Livro livro = LivroUtils
+                                .criaLivroBancoDados(LivrosRepository.buscarPorIsbn(isbn));
+
+                        if (livro == null) {
+                            System.out.println("Livro não encontrado!");
+                            ConsoleUI.pause();
+                            return;
+                        }
+                        LivroUtils.editar(livro);
                         break;
                     case 3:
                         excluirLivro();
@@ -119,69 +127,7 @@ public class MenuBibliotecario {
         }
     }
 
-    private static void editarLivro() {
-        try {
-            String isbn = InputUtils.readString("Informe o ISBN do livro a ser editado:");
-            Livro livro = LivroUtils.criaLivroBancoDados(LivrosRepository.buscarPorIsbn(isbn));
 
-            int option;
-            do {
-                ConsoleUI.header("EDITAR LIVRO");
-                System.out.println("1 - ISBN");
-                System.out.println("2 - TITULO");
-                System.out.println("3 - AUTOR");
-                System.out.println("4 - ANO DE PUBLICACAO");
-                System.out.println("5 - NUMERO DE COPIAS");
-                System.out.println("6 - DISPONIVEIS");
-                System.out.println("7 - VOLTAR");
-                option = InputUtils.readInt("Escolha:");
-                ConsoleUI.clear();
-                switch (option) {
-                    case 1:
-                        String isbnEditado = InputUtils.readString("Informe o ISBN: ");
-                        livro.setIsbn(isbnEditado);
-                        break;
-                    case 2:
-                        String tituloEditado = InputUtils.readString("Informe o Título: ");
-                        livro.setTitulo(tituloEditado);
-                        break;
-                    case 3:
-                        String autorEditado = InputUtils.readString("Informe o Autor: ");
-                        livro.setAutor(autorEditado);
-                        break;
-                    case 4:
-                        int anoPublicacaoEditado = InputUtils.readInt("Informe o Ano de Publicação: ");
-                        livro.setAnoPublicacao(anoPublicacaoEditado);
-                        break;
-                    case 5:
-                        int numeroCopiasEditado = InputUtils.readInt("Informe o Número de Cópias: ");
-                        livro.setNumeroCopias(numeroCopiasEditado);
-                        break;
-                    case 6:
-                        int disponiveisEditado = InputUtils.readInt("Informe as quantidades Disponíveis: ");
-                        livro.setDisponiveis(disponiveisEditado);
-                        break;
-                    case 7:
-                        System.out.println("Voltando...");
-                        return;
-
-                    default:
-                        System.out.println("Opção inválida.");
-                        ConsoleUI.pause();
-                        break;
-                }
-
-                Livro.editarLivro(livro);
-                ConsoleUI.clear();
-                System.out.println("Livro editado com sucesso!");
-                ConsoleUI.pause();
-            } while (option != 7);
-        } catch (Exception e) {
-            ConsoleUI.clear();
-            System.out.println("Erro ao editar livro!" + e.getMessage());
-            ConsoleUI.pause();
-        }
-    }
 
     private static void excluirLivro() {
         String isbn = InputUtils.readString("Informe o ISBN do Livro a ser desativado: ");
@@ -222,10 +168,23 @@ public class MenuBibliotecario {
                         ConsoleUI.pause();
                         break;
                     case 2:
-                        // editarBibliotecario();
+                        String id = InputUtils.readString("Informe o ID do membro a ser editado: ");
+
+                        Usuario usuarioBanco = UsuarioUtils
+                                .criaUsuarioBancoDados(UsuarioRepository.buscarPorId(id));
+
+                        if (!(usuarioBanco instanceof Membro)) {
+                            System.out.println("O ID informado não pertence a um membro!");
+                            ConsoleUI.pause();
+                            return;
+                        }
+
+                        Membro membro = (Membro) usuarioBanco;
+
+                        MembroUtils.editar(membro);
                         break;
                     case 3:
-                        // desativarBibliotecario();
+                        desativarMembro();
                         break;
                     case 4:
                         System.out.println("Voltando...");
@@ -240,80 +199,6 @@ public class MenuBibliotecario {
             System.out.println("Erro ao gerenciar membros: " + e.getMessage());
             ConsoleUI.pause();
         }
-    }
-
-    private static void editarMembro() {
-        // Informar o ID;
-        try {
-            String id = InputUtils.readString("Informe o ID do membro a ser editado:");
-            Usuario usuarioBancoDados = UsuarioUtils.criaUsuarioBancoDados(UsuarioRepository.buscarPorId(id));
-            if (UsuarioUtils.isBibliotecario(usuarioBancoDados))
-                return;
-
-            Membro membro = (Membro) usuarioBancoDados;
-            int option;
-            do {
-                ConsoleUI.header("EDITAR MEMBRO");
-                System.out.println("1 - NOME");
-                System.out.println("2 - CPF");
-                System.out.println("3 - LOGIN");
-                System.out.println("4 - SENHA");
-                System.out.println("5 - ENDERCO");
-                System.out.println("6 - TELEFONE");
-                System.out.println("7 - EMAIL");
-                System.out.println("8 - VOLTAR");
-                option = InputUtils.readInt("Escolha:");
-                ConsoleUI.clear();
-                switch (option) {
-                    case 1:
-                        String nome = InputUtils.readString("Informe o Nome:");
-                        membro.setNome(nome);
-                        break;
-                    case 2:
-                        String cpf = InputUtils.readString("Informe o CPF:");
-                        membro.setCpf(cpf);
-                        break;
-                    case 3:
-                        String login = InputUtils.readString("Informe o Login:");
-                        membro.setLogin(login);
-                        break;
-                    case 4:
-                        String senha = InputUtils.readString("Informe a Senha:");
-                        membro.setSenha(senha);
-                        break;
-                    case 5:
-                        String endereco = InputUtils.readString("Informe o Endereço:");
-                        membro.setEndereco(endereco);
-                        break;
-                    case 6:
-                        String telefone = InputUtils.readString("Informe o Telefone:");
-                        membro.setTelefone(telefone);
-                        break;
-                    case 7:
-                        String email = InputUtils.readString("Informe o Email:");
-                        membro.setEmail(email);
-                        break;
-                    case 8:
-                        System.out.println("Voltando...");
-                        return;
-
-                    default:
-                        System.out.println("Opção inválida.");
-                        ConsoleUI.pause();
-                        break;
-
-                }
-                DynamoUtils.enviarElementoBancoDeDados(UsuarioUtils.toMap(membro), "UsuariosPOO");
-                ConsoleUI.clear();
-                System.out.println("Membro editado com sucesso!");
-                ConsoleUI.pause();
-
-            } while (option != 8);
-        } catch (Exception e) {
-            // TODO: handle exception
-            ConsoleUI.pause();
-        }
-
     }
 
     private static void desativarMembro() {
@@ -349,7 +234,8 @@ public class MenuBibliotecario {
             String telefone = InputUtils.readString("Informe o telefone");
             String email = InputUtils.readString("Informe o email:");
 
-            Membro novoMembro = Membro.criarMembro(nome, cpf, login, senha, endereco, telefone, email);
+            Membro novoMembro =
+                    Membro.criarMembro(nome, cpf, login, senha, endereco, telefone, email);
 
             DynamoUtils.enviarElementoBancoDeDados(UsuarioUtils.toMap(novoMembro), "UsuariosPOO");
             ConsoleUI.clear();

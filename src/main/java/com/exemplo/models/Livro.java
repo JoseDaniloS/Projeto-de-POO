@@ -20,7 +20,8 @@ public class Livro {
     private int numeroCopias;
     private int disponiveis;
 
-    public Livro(String isbn, String titulo, String autor, int anoPublicacao, int numeroCopias, int disponiveis) {
+    public Livro(String isbn, String titulo, String autor, int anoPublicacao, int numeroCopias,
+            int disponiveis) {
         this.isbn = isbn;
         this.titulo = titulo;
         this.autor = autor;
@@ -99,7 +100,8 @@ public class Livro {
         }
     }
 
-    public static Livro criarLivro(String isbn, String titulo, String autor, int anoPublicacao, int numeroCopias) {
+    public static Livro criarLivro(String isbn, String titulo, String autor, int anoPublicacao,
+            int numeroCopias) {
         if (isbn == null || isbn.isEmpty()) {
             System.out.println("ISBN é obrigatório.");
             return null;
@@ -125,17 +127,34 @@ public class Livro {
         return livro;
     }
 
-    public static void editarLivro(Livro livroEditado) {
-        try {
-            if (livroEditado == null) {
-                System.out.println("Livro Inválido");
-                return;
-            }
-            DynamoUtils.enviarElementoBancoDeDados(LivroUtils.toMap(livroEditado), "LivrosPOO");
-        } catch (Exception e) {
-            System.out.println("Erro ao editar livro: " + e.getMessage());
-            ConsoleUI.pause();
+    public static void editarLivro(Livro livro, String isbn, String titulo, String autor,
+            int anoPublicacao, int numeroCopias, int disponiveis) {
+        if (livro == null) {
+            throw new Error("Livro Inexistente!");
         }
+        if (numeroCopias < 1) {
+            throw new Error("Erro: O número total de cópias deve ser no mínimo 1.");
+        }
+
+        if (disponiveis < 0) {
+            throw new Error("Erro: Disponíveis não pode ser negativo.");
+        }
+
+        if (disponiveis > numeroCopias) {
+            throw new Error("Erro: Disponíveis não pode ser maior que o número de cópias.");
+        }
+
+        if (anoPublicacao < 1400 || anoPublicacao > 2100) {
+            throw new Error("Erro: Ano de publicação inválido!");
+        }
+        livro.setIsbn(isbn);
+        livro.setTitulo(titulo);
+        livro.setAutor(autor);
+        livro.setAnoPublicacao(anoPublicacao);
+        livro.setNumeroCopias(numeroCopias);
+        livro.setDisponiveis(disponiveis);
+
+
     }
 
     public static void excluirLivro(Livro livro) {
@@ -162,7 +181,8 @@ public class Livro {
             int anoPublicacao = Integer.parseInt(item.get("anoPublicacao").n());
             int numeroCopias = Integer.parseInt(item.get("numeroCopias").n());
             int diponiveis = Integer.parseInt(item.get("disponiveis").n());
-            Livro novoLivro = new Livro(isbn, titulo, autor, anoPublicacao, numeroCopias, diponiveis);
+            Livro novoLivro =
+                    new Livro(isbn, titulo, autor, anoPublicacao, numeroCopias, diponiveis);
 
             listaLivros.add(novoLivro);
 

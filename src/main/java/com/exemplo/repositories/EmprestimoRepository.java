@@ -1,10 +1,11 @@
 package com.exemplo.repositories;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.exemplo.AWSConfig;
-
+import com.exemplo.models.Emprestimo;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.DeleteItemRequest;
@@ -24,8 +25,9 @@ public class EmprestimoRepository {
         try {
             Map<String, AttributeValue> key = Map.of(":cpfValue", AttributeValue.fromS(cpf));
 
-            QueryRequest request = QueryRequest.builder().tableName(TABLE_NAME).indexName("cpf-index")
-                    .keyConditionExpression("cpf = :cpfValue").expressionAttributeValues(key).build();
+            QueryRequest request = QueryRequest.builder().tableName(TABLE_NAME)
+                    .indexName("cpf-index").keyConditionExpression("cpf = :cpfValue")
+                    .expressionAttributeValues(key).build();
 
             QueryResponse response = client.query(request);
             if (!response.hasItems() || response.items().isEmpty()) {
@@ -40,6 +42,33 @@ public class EmprestimoRepository {
             return null; // Retorna vazio
         }
 
+    }
+
+    public static String buscarIdporIsbnECpf(String isbn, String cpf) {
+        DynamoDbClient client = AWSConfig.getClient();
+        try {
+            Map<String, AttributeValue> expressionValues = new HashMap<>();
+            expressionValues.put(":cpfValue", AttributeValue.fromS(cpf));
+            expressionValues.put(":isbnValue", AttributeValue.fromS(isbn));
+            expressionValues.put(":devolvidoFalse", AttributeValue.fromBool(false));
+
+            QueryRequest request =
+                    QueryRequest.builder().tableName(TABLE_NAME).indexName("cpf-isbn-index")
+                            .keyConditionExpression("cpf = :cpfValue AND isbn= :isbnValue").filterExpression("devolvido = :devolvidoFalse")
+                            .expressionAttributeValues(expressionValues).build();
+
+            QueryResponse response = client.query(request);
+
+            if (!response.hasItems() || response.items().isEmpty()) {
+                return null;
+            }
+
+            // Retorna o campo id do primeiro item encontrado
+            return response.items().get(0).get("id").s();
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar ID do empréstimo: " + e.getMessage());
+            return null;
+        }
     }
 
     // public static void excluir(String isbn) {
@@ -57,24 +86,24 @@ public class EmprestimoRepository {
 
     // }
 
-    // public static List<Map<String, AttributeValue>> buscarTodosLivros() {
-    // DynamoDbClient client = AWSConfig.getClient();
+    public static List<Map<String, AttributeValue>> buscarTodosEmprestimos() {
+        DynamoDbClient client = AWSConfig.getClient();
 
-    // try {
-    // ScanRequest request = ScanRequest.builder().tableName(TABLE_NAME)
-    // .build();
+        try {
+            ScanRequest request = ScanRequest.builder().tableName(TABLE_NAME).build();
 
-    // ScanResponse response = client.scan(request);
+            ScanResponse response = client.scan(request);
 
-    // if (!response.hasItems()) {
-    // System.out.println("Nenhum Livro encontrado!");
-    // return null;// Retorna vazio
-    // }
-    // return response.items(); // Retorna a lista de itens
-    // } catch (Exception e) {
-    // System.out.println("Erro ao buscar todos os Livro");
-    // System.out.println(e.getMessage());
-    // return null; // Retorna vazio
-    // }
-    // }
+            if (!response.hasItems()) {
+                System.out.println("Nenhum Emprestimo encontrado!");
+                return null;// Retorna vazio
+            }
+            return response.items(); // Retorna a lista de itens
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar todos os Emprestimos");
+            System.out.println(e.getMessage());
+            return null; // Retorna vazio
+        }
+
+    }
 }

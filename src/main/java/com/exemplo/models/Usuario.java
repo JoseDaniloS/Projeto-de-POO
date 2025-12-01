@@ -50,13 +50,10 @@ abstract public class Usuario {
             return;
         }
 
-        try {
-            Map<String, AttributeValue> item = UsuarioUtils.toMap(usuario);
-            DynamoUtils.enviarElementoBancoDeDados(item, "UsuariosPOO");
-            System.out.println("Dados do usuário atualizados e salvos no banco.");
-        } catch (Exception ex) {
-            System.out.println("Erro ao salvar usuário no banco: " + ex.getMessage());
-        }
+        usuario.setNome(nome);
+        usuario.setCpf(cpf);
+        usuario.setLogin(login);
+        usuario.setSenha(senha);
     }
 
     public static boolean autenticar(String login, String senha) {

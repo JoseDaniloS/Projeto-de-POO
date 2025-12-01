@@ -89,7 +89,8 @@ public class Emprestimo {
         System.out.println("Membro: " + membro.getNome());
         System.out.println("Data do Empréstimo: " + dataEmprestimo);
         System.out.println("Data da devolução prevista: " + dataDevolucaoPrevista);
-        System.out.println("Data da devolução real: " + (dataDevolucaoReal != null ? dataDevolucaoReal : "Pendente"));
+        System.out.println("Data da devolução real: "
+                + (dataDevolucaoReal != null ? dataDevolucaoReal : "Pendente"));
         System.out.println("Status: " + (devolvido ? "Devolvido" : "Em Aberto"));
     }
 
@@ -103,10 +104,9 @@ public class Emprestimo {
         this.dataDevolucaoReal = new Date();
 
         if (this.livro != null) {
-            this.livro.adicionarCopias(1);
+            this.livro.setDisponiveis(this.livro.getDisponiveis() + 1);
         }
 
-        System.out.println("Devolução registrada.");
     }
 
     public float calcularMulta() {
@@ -129,7 +129,8 @@ public class Emprestimo {
         }
 
         if (livro.getDisponiveis() <= 0) {
-            throw new IllegalArgumentException("O livro '" + livro.getTitulo() + "' não está disponível no momento.");
+            throw new IllegalArgumentException(
+                    "O livro '" + livro.getTitulo() + "' não está disponível no momento.");
 
         }
 
@@ -147,8 +148,8 @@ public class Emprestimo {
         return emprestimo;
     }
 
-    public static void editarEmprestimo(Emprestimo e, Date dataEmprestimo, Date dataDevolucaoPrevista,
-            Date dataDevolucaoReal, boolean devolvido) {
+    public static void editarEmprestimo(Emprestimo e, Date dataEmprestimo,
+            Date dataDevolucaoPrevista, Date dataDevolucaoReal, boolean devolvido) {
         if (e == null) {
             return;
         }
@@ -162,58 +163,101 @@ public class Emprestimo {
 
     public static void excluirEmprestimo(Emprestimo emprestimo) {
         if (emprestimo != null) {
-            System.out.println("Empréstimo removido do histórico: " + emprestimo.getLivro().getTitulo());
+            System.out.println(
+                    "Empréstimo removido do histórico: " + emprestimo.getLivro().getTitulo());
         }
     }
 
-    // public static List<Emprestimo> listarEmprestimos() {
-    // return new ArrayList<>();
-    // }
+    public static List<Emprestimo> listarEmprestimos() {
+        try {
+            List<Map<String, AttributeValue>> listaEmprestimos =
+                    EmprestimoRepository.buscarTodosEmprestimos();
+            if (listaEmprestimos.isEmpty()) {
+                return null;
+            }
+            return EmprestimoUtils.criarListaEmprestimosBancoDados(listaEmprestimos);
+        } catch (Exception e) {
+            System.out.println("Erro ao listar empréstimos: " + e.getMessage());
+            return null;
+        }
+    }
 
-    // public static List<Emprestimo> listarEmprestimosAtrasados() {
-    // return new ArrayList<>();
-    // }
+    public static List<Emprestimo> listarEmprestimosAtrasados() {
+        try {
+            List<Emprestimo> listaEmprestimosAtrasados = EmprestimoUtils
+                    .criarListaEmprestimosBancoDados(EmprestimoRepository.buscarTodosEmprestimos());
+            if (!listaEmprestimosAtrasados.isEmpty()) {
+                listaEmprestimosAtrasados.removeIf(emprestimo -> emprestimo.calcularMulta() == 0);
+            }
+            if (listaEmprestimosAtrasados.isEmpty()) {
+                return null;
+            }
+            return listaEmprestimosAtrasados;
+
+        } catch (Exception e) {
+            System.out.println("Erro ao listar empréstimos: " + e.getMessage());
+            return null;
+        }
+    }
 
     public static List<Emprestimo> listarEmprestimosAtrasadosPorMembro(Membro membro) {
         try {
-            List<Map<String, AttributeValue>> dadosEmprestimos = EmprestimoRepository.buscarPorMembro(membro.getCpf());
+            List<Map<String, AttributeValue>> dadosEmprestimos =
+                    EmprestimoRepository.buscarPorMembro(membro.getCpf());
 
-            List<Emprestimo> todosEmprestimosAtrasados = EmprestimoUtils
-                    .criarListaEmprestimosBancoDados(dadosEmprestimos);
+            List<Emprestimo> todosEmprestimosAtrasados =
+                    EmprestimoUtils.criarListaEmprestimosBancoDados(dadosEmprestimos);
 
             if (!todosEmprestimosAtrasados.isEmpty()) {
                 todosEmprestimosAtrasados.removeIf(emprestimo -> emprestimo.calcularMulta() == 0);
             }
+
             if (todosEmprestimosAtrasados.isEmpty()) {
-                System.out.println("Nenhum empréstimo atrasado encontrado para o membro: " + membro.getNome());
+                return null;
             }
             return todosEmprestimosAtrasados;
 
         } catch (Exception e) {
             System.out.println("Erro ao listar empréstimos ativos por membro: " + e.getMessage());
-            return new ArrayList<>();
+            return null;
         }
     }
 
-    // public static List<Emprestimo> listarEmprestimosAtivos() {
-    // return new ArrayList<>();
-    // }
+    public static List<Emprestimo> listarEmprestimosAtivos() {
+        try {
+            List<Emprestimo> listaEmprestimosAtivos = EmprestimoUtils
+                    .criarListaEmprestimosBancoDados(EmprestimoRepository.buscarTodosEmprestimos());
+            if (!listaEmprestimosAtivos.isEmpty()) {
+                listaEmprestimosAtivos.removeIf(emprestimo -> emprestimo.isDevolvido());
+            }
+            if (listaEmprestimosAtivos.isEmpty()) {
+                return null;
+            }
+
+            return listaEmprestimosAtivos;
+        } catch (Exception e) {
+            System.out.println("Erro ao listar empréstimos: " + e.getMessage());
+            return null;
+        }
+    }
 
     public static List<Emprestimo> listarEmprestimosAtivosPorMembro(Membro membro) {
         try {
-            List<Map<String, AttributeValue>> dadosEmprestimos = EmprestimoRepository.buscarPorMembro(membro.getCpf());
-            List<Emprestimo> todosEmprestimosAtivos = EmprestimoUtils.criarListaEmprestimosBancoDados(dadosEmprestimos);
+            List<Map<String, AttributeValue>> dadosEmprestimos =
+                    EmprestimoRepository.buscarPorMembro(membro.getCpf());
+            List<Emprestimo> todosEmprestimosAtivos =
+                    EmprestimoUtils.criarListaEmprestimosBancoDados(dadosEmprestimos);
 
             if (!todosEmprestimosAtivos.isEmpty()) {
                 todosEmprestimosAtivos.removeIf(emprestimo -> emprestimo.isDevolvido());
             }
             if (todosEmprestimosAtivos.isEmpty()) {
-                System.out.println("Nenhum empréstimo ativo encontrado para o membro: " + membro.getNome());
+                return null;
             }
             return todosEmprestimosAtivos;
         } catch (Exception e) {
             System.out.println("Erro ao listar empréstimos ativos por membro: " + e.getMessage());
-            return new ArrayList<>();
+            return null;
         }
     }
 

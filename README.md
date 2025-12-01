@@ -8,12 +8,11 @@
 ---
 
 ## 👥 Equipe
-- Charles Babbage  
-- Ada Lovelace  
-- Alan Turing  
-- Grace Hopper  
 
----
+| ![José Danilo](https://avatars.githubusercontent.com/u/154340363?v=4) | ![Carlos Danniel](https://avatars.githubusercontent.com/u/153085771?v=4) | ![Ludmila Costa Monteiro](https://avatars.githubusercontent.com/u/165919088?v=4) | ![Pedro Carlos Lima Paiva](https://avatars.githubusercontent.com/u/126197161?v=4) |
+|-------------------------------------|-------------------------------------|-------------------------------------|-------------------------------------|
+| **JOSE DANILO SANTOS DO NASCIMENTO** | **CARLOS DANNIEL GONCALVES DA SILVA** | **LUDMILA COSTA MONTEIRO** | **PEDRO CARLOS LIMA PAIVA** |
+
 
 ## 📚 Descrição do Sistema
 

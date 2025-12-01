@@ -1,4 +1,4 @@
-package com.exemplo.utils;
+package com.exemplo.validations;
 
 import java.util.regex.Pattern;
 
@@ -49,24 +49,6 @@ public class Validation {
         if (endereco == null || endereco.trim().isEmpty()) {
             return false;
         }
-        return true;
-    }
-
-    public static boolean isValid(String telefone, String email, String endereco, String nome, String cpf,
-            String senha) {
-        if (!isNameValid(nome))
-            return false;
-        if (!isCpfValid(cpf))
-            return false;
-        if (!isEmailValid(email))
-            return false;
-        if (!isSenhaValid(senha))
-            return false;
-        if (!isTelefoneValid(telefone))
-            return false;
-        if (!isEnderecoValid(endereco))
-            return false;
-
         return true;
     }
 }
