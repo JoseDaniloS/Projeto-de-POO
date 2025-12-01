@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.exemplo.repositories.UsuarioRepository;
+import com.exemplo.ui.ConsoleUI;
+import com.exemplo.utils.DynamoUtils;
+import com.exemplo.utils.UsuarioUtils;
 
+import com.exemplo.utils.UsuarioUtils;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 abstract public class Usuario {
@@ -25,8 +29,7 @@ abstract public class Usuario {
 
     // Exibir dados do usuario autenticado
     public void verUsuario() {
-        System.out.println("\n====================");
-        System.out.println("DADOS DO USÚARIO");
+        System.out.println("----- DADOS DO USUÁRIO -----");
         System.out.println("Nome: " + nome);
         System.out.println("CPF: " + cpf);
         System.out.println("Ativo: " + (ativo ? "Ativo" : "Inativo"));
@@ -36,7 +39,14 @@ abstract public class Usuario {
     // Editar um usuario ativo
     public static void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha,
             boolean ativo) {
-        if (verificaUsuarioAtivo(usuario)) {
+
+        if (usuario == null) {
+            System.out.println("Erro: Usuário inválido.");
+            return;
+        }
+
+        if (!usuario.isAtivo()) {
+            System.out.println("Não é possível editar um usuário inativo.");
             return;
         }
 
@@ -44,11 +54,13 @@ abstract public class Usuario {
         usuario.setCpf(cpf);
         usuario.setLogin(login);
         usuario.setSenha(senha);
-        usuario.setAtivo(ativo);
     }
 
     public static boolean autenticar(String login, String senha) {
         Map<String, AttributeValue> dados = UsuarioRepository.buscarPorId(login);
+
+        if (dados == null)
+            return false;
 
         String senhaHash = dados.get("senha").s();
 
@@ -63,7 +75,7 @@ abstract public class Usuario {
     // Metodo estatico para verificar se um usuario está ativo
     private static boolean verificaUsuarioAtivo(Usuario usuario) {
         if (usuario.ativo == false) {
-            System.out.println("Usuario desativado!!");
+            System.out.println("Usuario já desativado!!");
             return false;
         }
         return true;
@@ -117,8 +129,16 @@ abstract public class Usuario {
         this.ativo = ativo;
     }
 
-    protected static List<Usuario> listarUsuarios() {
-        List<Map<String, AttributeValue>> listaUsuariosDynamo = UsuarioRepository.buscarTodosUsuarios();
+    protected static List<Usuario> listarUsuarios(String tipo) {
+        List<Map<String, AttributeValue>> listaUsuariosDynamo = null;
+        if (tipo.equals("bibliotecario")) {
+            listaUsuariosDynamo = UsuarioRepository.buscarTodosBibliotecarios();
+        } else if (tipo.equals("membro")) {
+            listaUsuariosDynamo = UsuarioRepository.buscarTodosMembros();
+        } else {
+            System.out.println("Tipo de usuário inválido para listagem.");
+            return null;
+        }
 
         List<Usuario> listaUsuarios = new ArrayList<Usuario>();
 
@@ -128,7 +148,7 @@ abstract public class Usuario {
             String cpf = item.get("cpf").s();
             String senha = item.get("senha").s();
             boolean ativo = item.get("ativo").bool();
-            String cargo = item.get("cargo").s();
+            String cargo = item.containsKey("cargo") ? item.get("cargo").s() : "";
             // CAMPOS ADICIONAIS PARA MEMBRO
             String endereco = item.containsKey("endereco") ? item.get("endereco").s() : "";
             String telefone = item.containsKey("telefone") ? item.get("telefone").s() : "";
@@ -150,5 +170,4 @@ abstract public class Usuario {
         return listaUsuarios;
 
     }
-
 }

@@ -1,5 +1,7 @@
 package com.exemplo.models;
 
+import java.util.List;
+
 public class Membro extends Usuario {
     private String endereco;
     private String telefone;
@@ -60,15 +62,18 @@ public class Membro extends Usuario {
         System.out.println("Dados do membro atualizados.");
     }
 
-    @Override
-    public void verUsuario() {
+    public static List<Membro> listaMembros() {
+        List<Usuario> usuarios = Usuario.listarUsuarios("membro");
+        return usuarios.stream()
+                .filter(usuario -> usuario instanceof Membro)
+                .map(usuario -> (Membro) usuario)
+                .toList();
+    }
+
+    public void verMembro() {
         super.verUsuario();
         System.out.println("Endereço: " + this.endereco);
         System.out.println("Telefone: " + this.telefone);
         System.out.println("Email: " + this.email);
-    }
-
-    public void verMembro() {
-        this.verUsuario();
     }
 }

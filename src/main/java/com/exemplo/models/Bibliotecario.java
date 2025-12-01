@@ -2,7 +2,6 @@ package com.exemplo.models;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 public class Bibliotecario extends Usuario {
 
@@ -21,6 +20,7 @@ public class Bibliotecario extends Usuario {
     public static Bibliotecario criarBibliotecario(String nome, String cpf, String login, String senha, String cargo) {
         if (!CARGOS_VALIDOS.contains(cargo.toLowerCase())) {
             System.out.println("Cargo inválido!");
+            return null;
         }
 
         return new Bibliotecario(nome, cpf, login, senha, cargo);
@@ -45,14 +45,21 @@ public class Bibliotecario extends Usuario {
 
     public void setCargo(String cargo) {
         if (!CARGOS_VALIDOS.contains(cargo.toLowerCase())) {
-            this.cargo = cargo;
-        } else {
             System.out.println("Erro ao editar: O cargo '" + cargo + "' não é válido. Mantendo o anterior.");
+            return;
         }
+        this.cargo = cargo.toLowerCase();
     }
 
-    @Override
-    public void verUsuario() {
+    public static List<Bibliotecario> listaBibliotecarios() {
+        List<Usuario> usuarios = Usuario.listarUsuarios("bibliotecario");
+        return usuarios.stream()
+                .filter(usuario -> usuario instanceof Bibliotecario)
+                .map(usuario -> (Bibliotecario) usuario)
+                .toList();
+    }
+
+    public void verBibliotecario() {
         super.verUsuario();
         System.out.println("Cargo: " + this.cargo);
     }
