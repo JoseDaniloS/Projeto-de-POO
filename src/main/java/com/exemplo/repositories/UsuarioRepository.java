@@ -1,12 +1,9 @@
 package com.exemplo.repositories;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.exemplo.AWSConfig;
-import com.exemplo.models.Membro;
 import com.exemplo.models.Usuario;
 import com.exemplo.utils.UsuarioUtils;
 
@@ -14,7 +11,6 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
-import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
@@ -33,13 +29,13 @@ public class UsuarioRepository {
             GetItemResponse response = client.getItem(request);
 
             if (!response.hasItem() || response.item().isEmpty()) {
-                throw new Error("Usuario não encontrado!");
+                throw new RuntimeException("Usuario não encontrado!");
 
             }
 
             return response.item(); // Retorna a lista de itens
         } catch (Exception e) {
-            throw new Error("Erro ao buscar usuario por ID " + e.getMessage());
+            throw new RuntimeException("Erro ao buscar usuario por ID " + e.getMessage());
 
         }
 
@@ -62,7 +58,7 @@ public class UsuarioRepository {
             return UsuarioUtils.criaUsuarioBancoDados(response.items().get(0));
 
         } catch (Exception e) {
-            throw new Error("Erro ao buscar usuario por CPF " + e.getMessage());
+            throw new RuntimeException("Erro ao buscar usuario por CPF " + e.getMessage());
         }
     }
 

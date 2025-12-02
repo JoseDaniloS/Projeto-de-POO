@@ -1,7 +1,5 @@
 package com.exemplo.models;
 
-import java.io.Console;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +103,9 @@ public class Emprestimo {
 
         if (this.livro != null) {
             this.livro.setDisponiveis(this.livro.getDisponiveis() + 1);
+            DynamoUtils.enviarElementoBancoDeDados(LivroUtils.toMap(this.getLivro()), LivrosRepository.TABLE_NAME);
         }
+        
 
     }
 
