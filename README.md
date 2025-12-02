@@ -1,38 +1,4 @@
-# Sistema de Gerenciamento de Biblioteca
 
-**Universidade Federal Rural do Semi-Árido**  
-**Campus Pau dos Ferros**  
-**Departamento de Engenharias e Tecnologia**  
-**Disciplina:** PEX0130 – Programação Orientada a Objetos  
-
----
-
-## 👥 Equipe
-
-| ![José Danilo](https://avatars.githubusercontent.com/u/154340363?v=4) | ![Carlos Danniel](https://avatars.githubusercontent.com/u/153085771?v=4) | ![Ludmila Costa Monteiro](https://avatars.githubusercontent.com/u/165919088?v=4) | ![Pedro Carlos Lima Paiva](https://avatars.githubusercontent.com/u/126197161?v=4) |
-|-------------------------------------|-------------------------------------|-------------------------------------|-------------------------------------|
-| **JOSE DANILO SANTOS DO NASCIMENTO** | **CARLOS DANNIEL GONCALVES DA SILVA** | **LUDMILA COSTA MONTEIRO** | **PEDRO CARLOS LIMA PAIVA** |
-
-
-## 📚 Descrição do Sistema
-
-O **Sistema de Gerenciamento de Biblioteca** foi projetado para **automatizar e otimizar** as principais operações de uma biblioteca, incluindo:
-
-- Controle do **acervo de livros**  
-- Gerenciamento de **membros e bibliotecários**  
-- Processos de **empréstimos e devoluções**
-
----
-
-## 🔐 Controle de Acesso
-
-- **Bibliotecários e membros** podem fazer login no sistema
-- Bibliotecários podem ter os cargos de:
-  - Estagiário
-  - Atendente
-  - Supervisor
-
-### Regras de Permissão
 # Sistema de Gerenciamento de Biblioteca
 
 **Universidade Federal Rural do Semi-Árido**  
