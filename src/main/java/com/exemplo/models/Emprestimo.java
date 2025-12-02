@@ -124,12 +124,29 @@ public class Emprestimo {
 
     public static Emprestimo criarEmprestimo(Livro livro, Membro membro) {
         if (livro == null || membro == null) {
-            throw new IllegalArgumentException("Livro e Membro são obrigatórios.");
+            throw new RuntimeException("Livro e Membro são obrigatórios.");
 
         }
 
+        List<Emprestimo> emprestimosAtrasados = listarEmprestimosAtrasadosPorMembro(membro);
+
+        if(emprestimosAtrasados != null && !emprestimosAtrasados.isEmpty()){
+            int totalDiasSuspensao = 0;
+            for(Emprestimo emp : emprestimosAtrasados){
+                totalDiasSuspensao += (int) emp.calcularMulta();
+            }
+
+            for(Emprestimo emp : emprestimosAtrasados){
+                System.out.println(" " + emp.getLivro().getTitulo() + " - Atraso: " + (int)emp.calcularMulta() + " dia(s)");
+            }
+
+            System.out.println("\n Devolva os livros atrasados para realizar novos empréstimos!");
+            ConsoleUI.pause();
+            return null;
+        }
+
         if (livro.getDisponiveis() <= 0) {
-            throw new IllegalArgumentException(
+            throw new RuntimeException(
                     "O livro '" + livro.getTitulo() + "' não está disponível no momento.");
 
         }

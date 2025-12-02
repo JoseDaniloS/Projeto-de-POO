@@ -27,7 +27,7 @@ public class DynamoUtils {
             return AttributeValue.builder().bool((Boolean) campo).build();
         }
 
-        throw new IllegalArgumentException("Tipo não suportado: " + campo.getClass());
+        throw new RuntimeException("Tipo não suportado: " + campo.getClass());
     }
 
     public static void enviarElementoBancoDeDados(Map<String, AttributeValue> elemento, String tableName) {
@@ -58,7 +58,7 @@ public class DynamoUtils {
             // Converter string ISO 8601 para Instant → Date
             return Date.from(java.time.Instant.parse(dateString));
         } catch (Exception e) {
-            throw new IllegalArgumentException("Formato de data inválido: " + dateString);
+            throw new RuntimeException("Formato de data inválido: " + dateString);
         }
     }
 }
