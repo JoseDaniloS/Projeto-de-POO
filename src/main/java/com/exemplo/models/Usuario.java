@@ -5,11 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.exemplo.repositories.UsuarioRepository;
-import com.exemplo.ui.ConsoleUI;
-import com.exemplo.utils.DynamoUtils;
-import com.exemplo.utils.UsuarioUtils;
 
-import com.exemplo.utils.UsuarioUtils;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 abstract public class Usuario {

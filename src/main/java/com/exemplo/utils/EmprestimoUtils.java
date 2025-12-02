@@ -53,7 +53,6 @@ public class EmprestimoUtils {
         }
 
         public static void submenuEditarEmprestimo(Emprestimo emprestimo) {
-                int opcao;
 
 
                 ConsoleUI.header("EDITAR EMPRÉSTIMO");

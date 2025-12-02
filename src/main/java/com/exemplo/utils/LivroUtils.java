@@ -4,10 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.exemplo.models.Bibliotecario;
 import com.exemplo.models.Livro;
-import com.exemplo.models.Membro;
-import com.exemplo.models.Usuario;
 import com.exemplo.repositories.LivrosRepository;
 import com.exemplo.ui.ConsoleUI;
 
@@ -50,7 +47,7 @@ public class LivroUtils {
 
             System.out.println("Livro atualizado com sucesso!");
             ConsoleUI.pause();
-        } catch (Error e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             ConsoleUI.pause();
         }

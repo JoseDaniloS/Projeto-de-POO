@@ -1,7 +1,6 @@
 package com.exemplo.menus;
 
 import java.util.List;
-import java.util.Scanner;
 
 import com.exemplo.models.Bibliotecario;
 import com.exemplo.models.Emprestimo;
@@ -308,16 +307,18 @@ public class MenuSupervisor {
         String id = InputUtils.readString("Informe o ID do Bibliotecario a ser desativado: ");
         // bucar no banco de dados
         Usuario usuario = UsuarioUtils.criaUsuarioBancoDados(UsuarioRepository.buscarPorId(id));
-        if (usuario instanceof Bibliotecario == false) {
-            System.out.println("Usuario informado não é um Bibliotecario!");
-            ConsoleUI.pause();
-            return;
-        }
         if (usuario == null) {
             System.out.println("Bibliotecario não encontrado!");
             ConsoleUI.pause();
             return;
         }
+        
+        if (usuario instanceof Bibliotecario == false) {
+            System.out.println("Usuario informado não é um Bibliotecario!");
+            ConsoleUI.pause();
+            return;
+        }
+    
         Usuario.desativarUsuario(usuario);
         usuario.verUsuario();
         DynamoUtils.enviarElementoBancoDeDados(UsuarioUtils.toMap(usuario), "UsuariosPOO");

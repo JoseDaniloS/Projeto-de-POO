@@ -2,7 +2,6 @@ package com.exemplo;
 
 import java.io.Console;
 import java.util.Map;
-import java.util.Scanner;
 
 import com.exemplo.menus.MenuBibliotecario;
 import com.exemplo.menus.MenuMembro;

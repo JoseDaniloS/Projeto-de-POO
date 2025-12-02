@@ -2,14 +2,10 @@ package com.exemplo.menus;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
-import com.exemplo.models.Bibliotecario;
 import com.exemplo.models.Emprestimo;
-import com.exemplo.models.Livro;
 import com.exemplo.models.Membro;
 import com.exemplo.repositories.EmprestimoRepository;
-import com.exemplo.repositories.LivrosRepository;
 import com.exemplo.ui.ConsoleUI;
 import com.exemplo.utils.DynamoUtils;
 import com.exemplo.utils.EmprestimoUtils;
