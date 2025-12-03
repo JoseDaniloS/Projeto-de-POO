@@ -249,7 +249,7 @@ public class MenuSupervisor {
                             Emprestimo.listarEmprestimosAtivosPorMembro(membro);
 
                     // Se lista estiver vazia, parar
-                    if (listaEmprestimosAtivos.isEmpty()) {
+                    if (listaEmprestimosAtivos == null || listaEmprestimosAtivos.isEmpty()) {
                         System.out.println("Nenhum empréstimo ativo encontrado.");
                         ConsoleUI.pause();
                         break;
