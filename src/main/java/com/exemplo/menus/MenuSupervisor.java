@@ -54,10 +54,10 @@ public class MenuSupervisor {
     private static void cadastrarBibliotecario() {
         try {
             ConsoleUI.header("CADASTRAR BIBLIOTECARIO");
-            String nome = InputUtils.readString("Informe o nome:");
-            String cpf = InputUtils.readString("Informe o CPF:");
+            String nome = InputUtils.lerNome();
+            String cpf = InputUtils.lerCpf();
             String login = InputUtils.readString("Informe o Login (ID):");
-            String senha = InputUtils.readString("Informe a Senha:");
+            String senha = InputUtils.lerSenha();
 
             System.out.println("Selecione o Cargo:");
             System.out.println("1 - Estagiário");

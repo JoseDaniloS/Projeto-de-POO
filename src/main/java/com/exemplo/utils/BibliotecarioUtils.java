@@ -3,6 +3,10 @@ package com.exemplo.utils;
 import com.exemplo.models.Bibliotecario;
 import com.exemplo.ui.ConsoleUI;
 
+import static com.exemplo.utils.InputUtils.lerCpf;
+import static com.exemplo.utils.InputUtils.lerNome;
+import static com.exemplo.utils.InputUtils.lerSenha;
+
 public class BibliotecarioUtils {
     public static void editar(Bibliotecario b) {
 
@@ -11,9 +15,12 @@ public class BibliotecarioUtils {
         System.out.println("--------------------------");
 
         String nome = InputUtils.solicitar("Nome", b.getNome());
+        lerNome();
         String cpf = InputUtils.solicitar("CPF", b.getCpf());
+        lerCpf();   
         String login = InputUtils.solicitar("Login", b.getLogin());
         String senha = InputUtils.solicitar("Senha", b.getSenha());
+        lerSenha();
 
         boolean ativo = InputUtils.solicitarBoolean("Usuário ativo?", b.isAtivo());
 

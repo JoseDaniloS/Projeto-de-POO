@@ -227,13 +227,13 @@ public class MenuBibliotecario {
     private static void cadastrarMembro() {
         try {
             ConsoleUI.header("CADASTRAR MEMBRO");
-            String nome = InputUtils.readString("Informe o nome:");
-            String cpf = InputUtils.readString("Informe o CPF:");
+            String nome = InputUtils.lerNome();
+            String cpf = InputUtils.lerCpf();
             String login = InputUtils.readString("Informe o Login (ID):");
-            String senha = InputUtils.readString("Informe a Senha:");
-            String endereco = InputUtils.readString("Informe o Endereço:");
-            String telefone = InputUtils.readString("Informe o telefone");
-            String email = InputUtils.readString("Informe o email:");
+            String senha = InputUtils.lerSenha();
+            String endereco = InputUtils.lerEndereco();
+            String telefone = InputUtils.lerTelefone();
+            String email = InputUtils.lerEmail();
 
             Membro novoMembro =
                     Membro.criarMembro(nome, cpf, login, senha, endereco, telefone, email);
